@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>Karl & Christel — Fiançailles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Italiana&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --burgundy-deep:#5c1a26;
+    --burgundy:#7d2434;
+    --burgundy-soft:#a8465a;
+    --cream:#fbf6f1;
+    --cream-warm:#f4ebe1;
+    --blush:#e9d3ce;
+    --sage:#7c8365;
+    --gold:#b98a4e;
+    --ink:#3a2224;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Cormorant Garamond', serif;
+    background:var(--burgundy-deep);
+    color:var(--cream);
+    overflow:hidden;
+  }
+
+  /* ================= INTRO / TAP TO START ================= */
+  #intro{
+    position:fixed; inset:0; z-index:100;
+    background:radial-gradient(circle at 50% 30%, #7a2836 0%, #4c141e 75%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    transition:opacity 0.7s ease, visibility 0.7s ease;
+  }
+  #intro.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  #intro .logo-sprig{ margin-bottom:18px; opacity:0.9; }
+  #intro .intro-names{
+    font-family:'Playfair Display', serif;
+    font-size:38px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  #intro .intro-amp{ font-family:'Italiana',serif; color:var(--gold); font-size:18px; margin:4px 0; display:block; }
+  #intro .intro-date{
+    margin-top:14px;
+    font-family:'Italiana', serif;
+    letter-spacing:0.3em;
+    font-size:13px;
+    color:var(--blush);
+  }
+  #intro .tap-hint{
+    margin-top:46px;
+    font-size:13px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--blush);
+    opacity:0.8;
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:0.4;} 50%{opacity:0.9;} }
+
+  /* ================= SCROLL CONTAINER ================= */
+  #scroller{
+    height:100%;
+    overflow-y:scroll;
+    scroll-snap-type:y mandatory;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+  }
+  .slide{
+    scroll-snap-align:start;
+    height:100vh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:40px 30px;
+    text-align:center;
+  }
+  .slide-content{
+    opacity:0;
+    transform:translateY(26px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .slide.in-view .slide-content{ opacity:1; transform:translateY(0); }
+
+  /* scroll cue */
+  .scroll-cue{
+    position:absolute;
+    bottom:26px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Italiana', serif;
+    font-size:10px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--blush);
+    opacity:0.7;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .scroll-cue .arrow{
+    width:8px;height:8px;
+    border-right:1px solid var(--blush);
+    border-bottom:1px solid var(--blush);
+    transform:rotate(45deg);
+    animation:bounce 1.6s ease-in-out infinite;
+  }
+  @keyframes bounce{ 0%,100%{transform:translateY(0) rotate(45deg);} 50%{transform:translateY(6px) rotate(45deg);} }
+
+  /* ---------- Slide 1 : hero ---------- */
+  #s1{ background:radial-gradient(circle at 50% 20%, #732232 0%, #4c141e 80%); }
+  .eyebrow{
+    font-family:'Italiana', serif;
+    letter-spacing:0.42em;
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--blush);
+    opacity:0.9;
+  }
+  .hero-names{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size:46px;
+    line-height:1.18;
+    margin-top:14px;
+  }
+  .hero-amp{ display:block; font-family:'Italiana', serif; font-size:22px; color:var(--gold); margin:8px 0; }
+  .hero-sub{ margin-top:18px; font-style:italic; font-size:17px; color:var(--cream-warm); opacity:0.9; }
+
+  /* countdown */
+  .countdown{ display:flex; justify-content:center; gap:10px; margin-top:30px; }
+  .cd-cell{ background:rgba(255,255,255,0.06); border:1px solid rgba(233,211,206,0.3); border-radius:3px; padding:10px 4px; width:62px; }
+  .cd-num{ font-family:'Playfair Display', serif; font-weight:700; font-size:23px; color:var(--cream); font-variant-numeric:tabular-nums; }
+  .cd-label{ font-family:'Italiana', serif; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--blush); margin-top:4px; display:block; }
+
+  /* ---------- Slide 2 : quote / famille ---------- */
+  #s2{ background:var(--cream); color:var(--ink); }
+  .quote-mark{ font-family:'Playfair Display', serif; font-size:50px; color:var(--gold); line-height:0.5; }
+  .quote-text{ font-style:italic; font-size:20px; max-width:340px; margin:18px auto 0; line-height:1.6; color:var(--burgundy-deep); }
+  .family-names{ margin-top:34px; font-family:'Italiana', serif; letter-spacing:0.08em; font-size:14px; color:var(--burgundy); }
+  .family-line{ margin-top:6px; font-size:17px; color:var(--ink); }
+
+  /* ---------- Slide 3 : details ---------- */
+  #s3{ background:var(--burgundy-deep); }
+  .s3-title{ font-family:'Playfair Display', serif; font-size:28px; margin-bottom:26px; }
+  .detail-item{ margin-bottom:22px; }
+  .detail-item .lbl{ font-family:'Italiana', serif; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
+  .detail-item .val{ font-size:22px; margin-top:4px; font-weight:500; }
+  .detail-item .sub{ font-size:15px; font-style:italic; color:var(--blush); opacity:0.85; margin-top:2px; }
+  .map-link{
+    display:inline-block; margin-top:16px; padding:10px 22px;
+    border:1px solid var(--blush); border-radius:30px;
+    color:var(--cream); text-decoration:none; font-family:'Italiana', serif;
+    font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    transition:all 0.25s ease;
+  }
+  .map-link:hover{ background:var(--cream); color:var(--burgundy-deep); }
+
+  /* ---------- Slide 4 : map ---------- */
+  #s4{ background:var(--cream-warm); color:var(--ink); padding:70px 24px; }
+  .map-embed{ width:100%; max-width:400px; border-radius:6px; overflow:hidden; border:1px solid rgba(125,36,52,0.25); box-shadow:0 20px 40px -18px rgba(60,20,25,0.35); }
+
+  /* ---------- Slide 5 : RSVP ---------- */
+  #s5{ background:var(--burgundy-deep); padding:60px 26px; }
+  .rsvp-title{ font-family:'Playfair Display', serif; font-size:28px; margin-bottom:6px; }
+  .rsvp-sub{ font-size:15px; color:var(--blush); font-style:italic; margin-bottom:24px; }
+  .rsvp-form{ width:100%; max-width:340px; }
+  .rsvp-form input[type=text]{
+    width:100%; padding:12px 14px; border:1px solid rgba(233,211,206,0.4);
+    border-radius:3px; font-family:'Cormorant Garamond', serif; font-size:16px;
+    background:rgba(255,255,255,0.08); color:var(--cream); margin-bottom:14px;
+  }
+  .rsvp-form input::placeholder{ color:rgba(251,246,241,0.55); }
+  .rsvp-form input:focus{ outline:none; border-color:var(--gold); }
+  .rsvp-buttons{ display:flex; gap:10px; }
+  .rsvp-btn{
+    flex:1; padding:12px 8px; border-radius:3px; border:1px solid var(--blush);
+    background:transparent; color:var(--cream); font-family:'Italiana', serif;
+    font-size:13px; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer;
+    transition:all 0.2s ease;
+  }
+  .rsvp-btn:hover{ background:var(--blush); color:var(--burgundy-deep); }
+  .rsvp-btn.selected.yes{ background:var(--gold); border-color:var(--gold); color:var(--burgundy-deep); }
+  .rsvp-btn.selected.no{ background:#8a6b6a; border-color:#8a6b6a; color:var(--cream); }
+  .rsvp-guests{ display:none; align-items:center; justify-content:center; gap:14px; margin-top:16px; }
+  .rsvp-guests.show{ display:flex; }
+  .stepper-btn{ width:30px;height:30px;border-radius:50%;border:1px solid var(--blush);background:transparent;color:var(--cream);font-size:16px;cursor:pointer;line-height:1; }
+  .rsvp-confirm-btn{
+    display:none; width:100%; margin-top:18px; padding:13px; border:none; border-radius:3px;
+    background:var(--gold); color:var(--burgundy-deep); font-family:'Italiana', serif;
+    font-size:13px; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  }
+  .rsvp-confirm-btn.show{ display:block; }
+  .rsvp-thanks{ display:none; text-align:center; }
+  .rsvp-thanks.show{ display:block; }
+  .rsvp-thanks-title{ font-family:'Playfair Display', serif; font-size:22px; color:var(--gold); margin-bottom:8px; }
+
+  /* ---------- Slide 6 : closing ---------- */
+  #s6{ background:radial-gradient(circle at 50% 60%, #732232 0%, #3c1017 85%); }
+  .closing-mark{ font-family:'Italiana', serif; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+  .closing-line{ font-family:'Playfair Display', serif; font-style:italic; font-size:24px; color:var(--cream); }
+
+  .footer-sprig{ margin-top:28px; opacity:0.85; }
+
+  /* mute toggle */
+  #sound-toggle{
+    position:fixed; top:18px; right:18px; z-index:50;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.3);
+    color:var(--cream); font-size:16px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; backdrop-filter:blur(4px);
+  }
+
+  @media (max-width:420px){
+    .hero-names{font-size:36px;}
+    .cd-cell{width:52px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <svg class="logo-sprig" width="90" height="34" viewBox="0 0 120 46">
+    <g fill="none" stroke="#e9d3ce" stroke-width="1.4" stroke-linecap="round">
+      <path d="M60 40 C60 28, 60 18, 60 6"/>
+      <path d="M60 30 C50 26, 44 20, 40 12"/>
+      <path d="M60 30 C70 26, 76 20, 80 12"/>
+    </g>
+    <g fill="#c98897">
+      <ellipse cx="40" cy="12" rx="3.4" ry="2.1"/>
+      <ellipse cx="80" cy="12" rx="3.4" ry="2.1"/>
+      <ellipse cx="60" cy="6" rx="3.2" ry="2"/>
+    </g>
+  </svg>
+  <div class="intro-names">Karl<span class="intro-amp">&amp;</span>Christel</div>
+  <div class="intro-date">30 . 07 . 2026</div>
+  <div class="tap-hint" id="tap-hint">Toucher pour commencer</div>
+</div>
+
+<button id="sound-toggle" aria-label="Son">♪</button>
+
+<!-- SCROLLING CARD -->
+<div id="scroller">
+
+  <!-- Slide 1 — Hero + Countdown -->
+  <section class="slide" id="s1">
+    <div class="slide-content">
+      <div class="eyebrow">Vous vous en doutiez peut-être...</div>
+      <div class="hero-names">Karl<span class="hero-amp">&amp;</span>Christel</div>
+      <div class="hero-sub">Spoiler officiel : c'est confirmé, on se fiance !</div>
+      <div class="countdown">
+        <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><span class="cd-label">Jours</span></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><span class="cd-label">Heures</span></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><span class="cd-label">Min</span></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><span class="cd-label">Sec</span></div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Continuer</span><span class="arrow"></span></div>
+  </section>
+
+  <!-- Slide 2 — Quote + family -->
+  <section class="slide" id="s2">
+    <div class="slide-content">
+      <div class="quote-mark">&ldquo;</div>
+      <p class="quote-text">Deux chemins qui se rejoignent, une seule aventure qui commence. Merci de faire partie de la nôtre.</p>
+      <div class="family-names">Avec des cœurs pleins de joie</div>
+      <div class="family-line">Les familles El Alaam &amp; El Khoueiry</div>
+      <div class="family-line" style="margin-top:4px;">vous invitent à célébrer les fiançailles de leurs enfants</div>
+    </div>
+    <div class="scroll-cue"><span>Continuer</span><span class="arrow"></span></div>
+  </section>
+
+  <!-- Slide 3 — Event details -->
+  <section class="slide" id="s3">
+    <div class="slide-content">
+      <div class="s3-title">La Célébration</div>
+      <div class="detail-item">
+        <div class="lbl">Date</div>
+        <div class="val">30 juillet 2026</div>
+        <div class="sub">Dès 19h</div>
+      </div>
+      <div class="detail-item">
+        <div class="lbl">Étape 1</div>
+        <div class="val">Chez Christel</div>
+        <div class="sub">Petite mise en bouche entre proches</div>
+      </div>
+      <div class="detail-item">
+        <div class="lbl">Étape 2</div>
+        <div class="val">Restaurant Amar Harissa</div>
+        <div class="sub">Vue sur la baie de Jounieh</div>
+        <a class="map-link" href="https://maps.google.com/?cid=1083637690168279914" target="_blank">Voir sur la carte</a>
+      </div>
+      <div class="detail-item">
+        <div class="lbl">Tenue</div>
+        <div class="val">Chic &amp; décontracté</div>
+        <div class="sub">On trinque, on ne défile pas</div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Continuer</span><span class="arrow"></span></div>
+  </section>
+
+  <!-- Slide 5 — RSVP -->
+  <section class="slide" id="s5">
+    <div class="slide-content" id="rsvp-wrap">
+      <div class="rsvp-title">Be Our Guest</div>
+      <div class="rsvp-sub">Merci de répondre avant le 20 juillet</div>
+
+      <div class="rsvp-form" id="rsvp-form">
+        <input type="text" id="rsvp-name" placeholder="Votre nom" />
+        <div class="rsvp-buttons">
+          <button class="rsvp-btn yes" id="btn-yes" type="button">Je serai là</button>
+          <button class="rsvp-btn no" id="btn-no" type="button">Je ne peux pas</button>
+        </div>
+        <div class="rsvp-guests" id="rsvp-guests">
+          <span style="font-size:15px;">Accompagné(e) de</span>
+          <button class="stepper-btn" id="minus">−</button>
+          <span id="guest-count" style="font-family:'Playfair Display',serif;font-size:18px;min-width:18px;text-align:center;">0</span>
+          <button class="stepper-btn" id="plus">+</button>
+        </div>
+        <button class="rsvp-confirm-btn" id="confirm-btn" type="button">Confirmer ma réponse</button>
+      </div>
+
+      <div class="rsvp-thanks" id="rsvp-thanks">
+        <div class="rsvp-thanks-title" id="thanks-title">Merci !</div>
+        <div id="thanks-text" style="font-size:15px;color:var(--blush);"></div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Continuer</span><span class="arrow"></span></div>
+  </section>
+
+  <!-- Slide 6 — Closing -->
+  <section class="slide" id="s6">
+    <div class="slide-content">
+      <div class="closing-mark">Le début d'un toujours</div>
+      <div class="closing-line">Karl &amp; Christel ♡</div>
+      <svg class="footer-sprig" width="140" height="20" viewBox="0 0 140 20">
+        <g fill="none" stroke="#e9d3ce" stroke-width="1.2" stroke-linecap="round" opacity="0.6">
+          <path d="M10 10 H60"/><path d="M80 10 H130"/>
+        </g>
+        <g fill="#c98897" opacity="0.85">
+          <ellipse cx="66" cy="10" rx="2.6" ry="1.6"/><ellipse cx="70" cy="7" rx="2.2" ry="1.4"/><ellipse cx="74" cy="10" rx="2.6" ry="1.6"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+</div>
+
+<audio id="bg-audio" loop preload="none">
+  <!-- Optional: add a hosted mp3 URL here if you have one -->
+</audio>
+
+<script>
+  // ---- Intro tap to start ----
+  const intro = document.getElementById('intro');
+  const audio = document.getElementById('bg-audio');
+  intro.addEventListener('click', () => {
+    intro.classList.add('hide');
+    if(audio.src){ audio.play().catch(()=>{}); }
+  });
+
+  // ---- Sound toggle ----
+  const soundBtn = document.getElementById('sound-toggle');
+  let muted = true;
+  soundBtn.addEventListener('click', () => {
+    if(!audio.src){ return; }
+    muted = !muted;
+    audio.muted = muted;
+    soundBtn.textContent = muted ? '♪' : '♫';
+    if(!muted){ audio.play().catch(()=>{}); }
+  });
+
+  // ---- Reveal slides on scroll ----
+  const slides = document.querySelectorAll('.slide');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('in-view'); }
+    });
+  }, { threshold: 0.4 });
+  slides.forEach(s => io.observe(s));
+
+  // ---- Countdown ----
+  const target = new Date('2026-07-30T19:00:00');
+  function tick(){
+    const now = new Date();
+    let diff = target - now;
+    if(diff < 0) diff = 0;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    document.getElementById('cd-days').textContent = d;
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- RSVP flow ----
+  let choice = null, guests = 0;
+  const btnYes = document.getElementById('btn-yes');
+  const btnNo = document.getElementById('btn-no');
+  const guestBox = document.getElementById('rsvp-guests');
+  const guestCount = document.getElementById('guest-count');
+  const confirmBtn = document.getElementById('confirm-btn');
+
+  btnYes.addEventListener('click', () => {
+    choice = 'yes';
+    btnYes.classList.add('selected','yes');
+    btnNo.classList.remove('selected','no');
+    guestBox.classList.add('show');
+    confirmBtn.classList.add('show');
+  });
+  btnNo.addEventListener('click', () => {
+    choice = 'no';
+    btnNo.classList.add('selected','no');
+    btnYes.classList.remove('selected','yes');
+    guestBox.classList.remove('show');
+    confirmBtn.classList.add('show');
+  });
+  document.getElementById('plus').addEventListener('click', () => { if(guests<6){ guests++; guestCount.textContent = guests; } });
+  document.getElementById('minus').addEventListener('click', () => { if(guests>0){ guests--; guestCount.textContent = guests; } });
+
+  confirmBtn.addEventListener('click', () => {
+    const name = document.getElementById('rsvp-name').value.trim() || 'Cher invité';
+    document.getElementById('rsvp-form').style.display = 'none';
+    document.getElementById('rsvp-thanks').classList.add('show');
+    if(choice === 'yes'){
+      document.getElementById('thanks-title').textContent = 'On vous attend, ' + name + ' !';
+      document.getElementById('thanks-text').textContent = guests > 0
+        ? 'Note prise pour vous + ' + guests + ' invité(s). 🥂'
+        : 'Note prise, préparez votre plus beau sourire 🥂';
+    } else {
+      document.getElementById('thanks-title').textContent = 'Merci ' + name;
+      document.getElementById('thanks-text').textContent = 'Vous allez nous manquer, on pense fort à vous ce soir-là 💌';
+    }
+  });
+</script>
+
+</body>
+</html>
